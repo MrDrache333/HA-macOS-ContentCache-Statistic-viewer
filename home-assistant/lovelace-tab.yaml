@@ -1,0 +1,111 @@
+  - title: Apple Cache
+    path: cache
+    panel: false
+    badges:
+      - entity: sensor.apple_inhaltscache_alles_ok
+    cards:
+      - entities:
+          - entity: sensor.apple_inhaltscache_data_icloud
+            name: iCloud
+          - entity: sensor.apple_inhaltscache_data_mac
+            name: Mac
+          - entity: sensor.apple_inhaltscache_data_other
+            name: Other
+          - entity: sensor.apple_inhaltscache_data_tv
+            name: TV
+          - entity: sensor.apple_inhaltscache_data_ios
+            name: iOS
+        title: Bereitstellungen aus Cache
+        direction: up
+        height: 300px
+        stack: horizontal
+        type: 'custom:bar-card'
+      - type: entities
+        entities:
+          - entity: sensor.apple_inhaltscache_status
+            name: Aktueller Status
+          - entity: sensor.apple_inhaltscache_letztes_update
+            name: Letztes Update
+          - entity: sensor.apple_inhaltscache_lokale_adresse
+            name: Lokale Adresse
+          - entity: sensor.apple_inhaltscache_offentliche_adresse
+            name: Öffentliche Adresse
+        state_color: true
+      - type: entities
+        entities:
+          - entity: sensor.apple_inhaltscache_datenstatistik_seit
+            name: Daten seit dem
+          - entity: sensor.apple_inhaltscache_total_returned
+            name: An Clients verteilt
+          - entity: sensor.apple_inhaltscache_total_downloaded
+            name: Von Quelle geladen
+          - entity: sensor.apple_inhaltscache_total_imported
+            name: Von Clients importiert
+          - entity: sensor.apple_inhaltscache_total_dropped
+            name: Aus Cache entfernt
+        state_color: true
+        title: Datenstatistik
+      - type: vertical-stack
+        cards:
+          - type: gauge
+            min: 0
+            max: 100
+            entity: sensor.apple_inhaltscache_cachedruck
+            name: Cachedruck
+            severity:
+              green: 0
+              yellow: 50
+              red: 80
+          - type: gauge
+            min: 0
+            max: 100
+            entity: sensor.apple_inhaltscache_effizienz
+            name: Effizienz
+            severity:
+              green: 50
+              yellow: 4
+              red: 10
+          - type: gauge
+            min: 0
+            max: 500
+            entity: sensor.apple_inhaltscache
+            severity:
+              green: 0
+              yellow: 250
+              red: 450
+            name: Speicherbelegung
+            unit: GB
+      - type: vertical-stack
+        cards:
+          - type: history-graph
+            entities:
+              - entity: sensor.apple_inhaltscache_total_dropped
+                name: Entfernt
+              - entity: sensor.apple_inhaltscache_total_imported
+                name: Importiert
+              - entity: sensor.apple_inhaltscache_total_downloaded
+                name: Download
+              - entity: sensor.apple_inhaltscache_total_returned
+                name: Verteilt
+            hours_to_show: 168
+            refresh_interval: 0
+            title: Verlauf (Daten)
+          - type: history-graph
+            entities:
+              - entity: sensor.apple_inhaltscache_datendownload
+                name: Download
+              - entity: sensor.apple_inhaltscache_datenupload
+                name: Upload
+            hours_to_show: 1
+            refresh_interval: 0
+            title: Datenverkehr Cache-Internet
+          - type: history-graph
+            entities:
+              - entity: sensor.apple_inhaltscache_downloadanfragen_2m
+                name: Downloadanfragen
+              - entity: sensor.apple_inhaltscache_uploadanfragen_2m
+                name: Uploadanfragen
+            hours_to_show: 168
+            refresh_interval: 0
+            title: Anfragen der letzten Woche
+
