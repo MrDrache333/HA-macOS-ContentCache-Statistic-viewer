@@ -1,0 +1,1391 @@
+[
+    {
+        "id": "a8470243.ae7da",
+        "type": "exec",
+        "z": "6a3067bf.7f7f88",
+        "command": "AssetCacheManagerUtil --json status",
+        "addpay": false,
+        "append": "",
+        "useSpawn": "false",
+        "timer": "",
+        "oldrc": false,
+        "name": "",
+        "x": 490,
+        "y": 280,
+        "wires": [
+            [
+                "2199a632.3be63a"
+            ],
+            [],
+            []
+        ]
+    },
+    {
+        "id": "9257f15b.4fe47",
+        "type": "inject",
+        "z": "6a3067bf.7f7f88",
+        "name": "Alle 2 Minuten",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "120",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 130,
+        "y": 280,
+        "wires": [
+            [
+                "a8470243.ae7da"
+            ]
+        ]
+    },
+    {
+        "id": "2199a632.3be63a",
+        "type": "json",
+        "z": "6a3067bf.7f7f88",
+        "name": "",
+        "property": "payload",
+        "action": "",
+        "pretty": false,
+        "x": 730,
+        "y": 260,
+        "wires": [
+            [
+                "8514a84d.aac968"
+            ]
+        ]
+    },
+    {
+        "id": "d2390401.1c6348",
+        "type": "ha-entity",
+        "z": "6a3067bf.7f7f88",
+        "name": "Used",
+        "server": "d10b5b0f.f907d",
+        "version": 1,
+        "debugenabled": false,
+        "outputs": 1,
+        "entityType": "sensor",
+        "config": [
+            {
+                "property": "name",
+                "value": "Apple Inhaltscache - CacheUsed"
+            },
+            {
+                "property": "device_class",
+                "value": ""
+            },
+            {
+                "property": "icon",
+                "value": ""
+            },
+            {
+                "property": "unit_of_measurement",
+                "value": "GB"
+            }
+        ],
+        "state": "payload.CacheUsed",
+        "stateType": "msg",
+        "attributes": [
+            {
+                "property": "data_tv",
+                "value": "payload.CacheDetails[\"Apple TV Software\"]",
+                "valueType": "msg"
+            },
+            {
+                "property": "data_icloud",
+                "value": "payload.CacheDetails[\"iCloud\"]",
+                "valueType": "msg"
+            },
+            {
+                "property": "data_ios",
+                "value": "payload.CacheDetails[\"iOS Software\"]",
+                "valueType": "msg"
+            },
+            {
+                "property": "data_macOS",
+                "value": "payload.CacheDetails[\"Mac Software\"]",
+                "valueType": "msg"
+            },
+            {
+                "property": "data_other",
+                "value": "payload.CacheDetails[\"Other\"]",
+                "valueType": "msg"
+            }
+        ],
+        "resend": true,
+        "outputLocation": "",
+        "outputLocationType": "none",
+        "inputOverride": "allow",
+        "outputOnStateChange": false,
+        "outputPayload": "$entity().state ? \"on\": \"off\"",
+        "outputPayloadType": "jsonata",
+        "x": 1210,
+        "y": 260,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "8514a84d.aac968",
+        "type": "function",
+        "z": "6a3067bf.7f7f88",
+        "name": "",
+        "func": "msg.payload = msg.payload.result\n\nmsg.payload.CacheUsed = byteToGB(msg.payload.CacheUsed)\nconvertDetailToGB(\"Apple TV Software\")\nconvertDetailToGB(\"iCloud\")\nconvertDetailToGB(\"iOS Software\")\nconvertDetailToGB(\"Mac Software\")\nconvertDetailToGB(\"Other\")\n\nmsg.payload.MaxCachePressureLast1Hour *= 100\n\nmsg.payload.efficancy = Number((1.0 - (Number(msg.payload.TotalBytesStoredFromOrigin) / 1000000000) / (Number(msg.payload.TotalBytesReturnedToClients) / 1000000000)) * 100).toFixed(1)\n\nmsg.payload.EverthingFine = msg.payload.StartupStatus == \"OK\" && msg.payload.Active && msg.payload.Activated\n\nmsg.payload.TotalBytesDropped = byteToGB(msg.payload.TotalBytesDropped)\n\nmsg.payload.TotalBytesReturnedToClients = byteToGB(msg.payload.TotalBytesReturnedToClients)\n\nmsg.payload.TotalBytesStoredFromOrigin = byteToGB(msg.payload.TotalBytesStoredFromOrigin)\n\nmsg.payload.TotalBytesImported = byteToGB(msg.payload.TotalBytesImported)\n\nmsg.payload.TotalBytesAreSince = new Date(msg.payload.TotalBytesAreSince).toLocaleString(\"de-DE\").replace(\",\",\" um\")\n\nmsg.payload.localAddress = msg.payload.PrivateAddresses[0] + \":\" + msg.payload.Port\n\nmsg.payload.lastUpdate = new Date().toLocaleString(\"de-DE\").replace(\",\",\" um\")\n\nreturn msg;\n\n\nfunction byteToGB(nr){\n    return Number((nr / 1000000000).toFixed(2))\n}\n\nfunction convertDetailToGB(name){\n    msg.payload.CacheDetails[name] = byteToGB(msg.payload.CacheDetails[name])\n}",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "x": 880,
+        "y": 260,
+        "wires": [
+            [
+                "d2390401.1c6348",
+                "964dabbb.962a48",
+                "8bda7fe6.c9082",
+                "af422087.22a2d",
+                "113c9b69.a485a5",
+                "f1566195.b4e9d8",
+                "9adbc592.4e0e1",
+                "1b30ec24.e210e4",
+                "2d9cbbb.b686cc4",
+                "c013e4c2.663cb",
+                "13d34398.ee1804",
+                "195e4212.d6ad6e",
+                "27ea788c.9a7e6",
+                "6f52cf6e.902a98",
+                "53a3cb1.d5205b4",
+                "13c2a4db.2b9f53",
+                "80491eb4.5c5bd",
+                "5e26eaad.e4d934"
+            ]
+        ]
+    },
+    {
+        "id": "964dabbb.962a48",
+        "type": "ha-entity",
+        "z": "6a3067bf.7f7f88",
+        "name": "Data TV",
+        "server": "d10b5b0f.f907d",
+        "version": 1,
+        "debugenabled": false,
+        "outputs": 1,
+        "entityType": "sensor",
+        "config": [
+            {
+                "property": "name",
+                "value": "Apple Inhaltscache - Data - TV"
+            },
+            {
+                "property": "device_class",
+                "value": ""
+            },
+            {
+                "property": "icon",
+                "value": ""
+            },
+            {
+                "property": "unit_of_measurement",
+                "value": "GB"
+            }
+        ],
+        "state": "payload.CacheDetails[\"Apple TV Software\"]",
+        "stateType": "msg",
+        "attributes": [],
+        "resend": true,
+        "outputLocation": "",
+        "outputLocationType": "none",
+        "inputOverride": "allow",
+        "outputOnStateChange": false,
+        "outputPayload": "$entity().state ? \"on\": \"off\"",
+        "outputPayloadType": "jsonata",
+        "x": 1220,
+        "y": 320,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "8bda7fe6.c9082",
+        "type": "ha-entity",
+        "z": "6a3067bf.7f7f88",
+        "name": "Data iCloud",
+        "server": "d10b5b0f.f907d",
+        "version": 1,
+        "debugenabled": false,
+        "outputs": 1,
+        "entityType": "sensor",
+        "config": [
+            {
+                "property": "name",
+                "value": "Apple Inhaltscache - Data - iCloud"
+            },
+            {
+                "property": "device_class",
+                "value": ""
+            },
+            {
+                "property": "icon",
+                "value": ""
+            },
+            {
+                "property": "unit_of_measurement",
+                "value": "GB"
+            }
+        ],
+        "state": "payload.CacheDetails[\"iCloud\"]",
+        "stateType": "msg",
+        "attributes": [],
+        "resend": true,
+        "outputLocation": "",
+        "outputLocationType": "none",
+        "inputOverride": "allow",
+        "outputOnStateChange": false,
+        "outputPayload": "$entity().state ? \"on\": \"off\"",
+        "outputPayloadType": "jsonata",
+        "x": 1230,
+        "y": 380,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "af422087.22a2d",
+        "type": "ha-entity",
+        "z": "6a3067bf.7f7f88",
+        "name": "Data iOS",
+        "server": "d10b5b0f.f907d",
+        "version": 1,
+        "debugenabled": false,
+        "outputs": 1,
+        "entityType": "sensor",
+        "config": [
+            {
+                "property": "name",
+                "value": "Apple Inhaltscache - Data - iOS"
+            },
+            {
+                "property": "device_class",
+                "value": ""
+            },
+            {
+                "property": "icon",
+                "value": ""
+            },
+            {
+                "property": "unit_of_measurement",
+                "value": "GB"
+            }
+        ],
+        "state": "payload.CacheDetails[\"iOS Software\"]",
+        "stateType": "msg",
+        "attributes": [],
+        "resend": true,
+        "outputLocation": "",
+        "outputLocationType": "none",
+        "inputOverride": "allow",
+        "outputOnStateChange": false,
+        "outputPayload": "$entity().state ? \"on\": \"off\"",
+        "outputPayloadType": "jsonata",
+        "x": 1220,
+        "y": 440,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "113c9b69.a485a5",
+        "type": "ha-entity",
+        "z": "6a3067bf.7f7f88",
+        "name": "Data Mac",
+        "server": "d10b5b0f.f907d",
+        "version": 1,
+        "debugenabled": false,
+        "outputs": 1,
+        "entityType": "sensor",
+        "config": [
+            {
+                "property": "name",
+                "value": "Apple Inhaltscache - Data Mac"
+            },
+            {
+                "property": "device_class",
+                "value": ""
+            },
+            {
+                "property": "icon",
+                "value": ""
+            },
+            {
+                "property": "unit_of_measurement",
+                "value": "GB"
+            }
+        ],
+        "state": "payload.CacheDetails[\"Mac Software\"]",
+        "stateType": "msg",
+        "attributes": [],
+        "resend": true,
+        "outputLocation": "",
+        "outputLocationType": "none",
+        "inputOverride": "allow",
+        "outputOnStateChange": false,
+        "outputPayload": "$entity().state ? \"on\": \"off\"",
+        "outputPayloadType": "jsonata",
+        "x": 1220,
+        "y": 500,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "f1566195.b4e9d8",
+        "type": "ha-entity",
+        "z": "6a3067bf.7f7f88",
+        "name": "Data Other",
+        "server": "d10b5b0f.f907d",
+        "version": 1,
+        "debugenabled": false,
+        "outputs": 1,
+        "entityType": "sensor",
+        "config": [
+            {
+                "property": "name",
+                "value": "Apple Inhaltscache - Data - Other"
+            },
+            {
+                "property": "device_class",
+                "value": ""
+            },
+            {
+                "property": "icon",
+                "value": ""
+            },
+            {
+                "property": "unit_of_measurement",
+                "value": "GB"
+            }
+        ],
+        "state": "payload.CacheDetails[\"Other\"]",
+        "stateType": "msg",
+        "attributes": [],
+        "resend": true,
+        "outputLocation": "",
+        "outputLocationType": "none",
+        "inputOverride": "allow",
+        "outputOnStateChange": false,
+        "outputPayload": "$entity().state ? \"on\": \"off\"",
+        "outputPayloadType": "jsonata",
+        "x": 1230,
+        "y": 560,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "9adbc592.4e0e1",
+        "type": "ha-entity",
+        "z": "6a3067bf.7f7f88",
+        "name": "OK?",
+        "server": "d10b5b0f.f907d",
+        "version": 1,
+        "debugenabled": false,
+        "outputs": 1,
+        "entityType": "sensor",
+        "config": [
+            {
+                "property": "name",
+                "value": "Apple Inhaltscache - Alles OK"
+            },
+            {
+                "property": "device_class",
+                "value": ""
+            },
+            {
+                "property": "icon",
+                "value": ""
+            },
+            {
+                "property": "unit_of_measurement",
+                "value": ""
+            }
+        ],
+        "state": "payload.EverthingFine",
+        "stateType": "msg",
+        "attributes": [],
+        "resend": true,
+        "outputLocation": "",
+        "outputLocationType": "none",
+        "inputOverride": "allow",
+        "outputOnStateChange": false,
+        "outputPayload": "$entity().state ? \"on\": \"off\"",
+        "outputPayloadType": "jsonata",
+        "x": 1210,
+        "y": 620,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "1b30ec24.e210e4",
+        "type": "ha-entity",
+        "z": "6a3067bf.7f7f88",
+        "name": "Total Dropped",
+        "server": "d10b5b0f.f907d",
+        "version": 1,
+        "debugenabled": false,
+        "outputs": 1,
+        "entityType": "sensor",
+        "config": [
+            {
+                "property": "name",
+                "value": "Apple Inhaltscache - Total Dropped"
+            },
+            {
+                "property": "device_class",
+                "value": ""
+            },
+            {
+                "property": "icon",
+                "value": ""
+            },
+            {
+                "property": "unit_of_measurement",
+                "value": "GB"
+            }
+        ],
+        "state": "payload.TotalBytesDropped",
+        "stateType": "msg",
+        "attributes": [],
+        "resend": true,
+        "outputLocation": "",
+        "outputLocationType": "none",
+        "inputOverride": "allow",
+        "outputOnStateChange": false,
+        "outputPayload": "$entity().state ? \"on\": \"off\"",
+        "outputPayloadType": "jsonata",
+        "x": 1240,
+        "y": 680,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "2d9cbbb.b686cc4",
+        "type": "ha-entity",
+        "z": "6a3067bf.7f7f88",
+        "name": "Total Imported",
+        "server": "d10b5b0f.f907d",
+        "version": 1,
+        "debugenabled": false,
+        "outputs": 1,
+        "entityType": "sensor",
+        "config": [
+            {
+                "property": "name",
+                "value": "Apple Inhaltscache - Total Imported"
+            },
+            {
+                "property": "device_class",
+                "value": ""
+            },
+            {
+                "property": "icon",
+                "value": ""
+            },
+            {
+                "property": "unit_of_measurement",
+                "value": "GB"
+            }
+        ],
+        "state": "payload.TotalBytesImported",
+        "stateType": "msg",
+        "attributes": [],
+        "resend": true,
+        "outputLocation": "",
+        "outputLocationType": "none",
+        "inputOverride": "allow",
+        "outputOnStateChange": false,
+        "outputPayload": "$entity().state ? \"on\": \"off\"",
+        "outputPayloadType": "jsonata",
+        "x": 1240,
+        "y": 740,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "c013e4c2.663cb",
+        "type": "ha-entity",
+        "z": "6a3067bf.7f7f88",
+        "name": "Total Returned",
+        "server": "d10b5b0f.f907d",
+        "version": 1,
+        "debugenabled": false,
+        "outputs": 1,
+        "entityType": "sensor",
+        "config": [
+            {
+                "property": "name",
+                "value": "Apple Inhaltscache - Total Returned"
+            },
+            {
+                "property": "device_class",
+                "value": ""
+            },
+            {
+                "property": "icon",
+                "value": ""
+            },
+            {
+                "property": "unit_of_measurement",
+                "value": "GB"
+            }
+        ],
+        "state": "payload.TotalBytesReturnedToClients",
+        "stateType": "msg",
+        "attributes": [],
+        "resend": true,
+        "outputLocation": "",
+        "outputLocationType": "none",
+        "inputOverride": "allow",
+        "outputOnStateChange": false,
+        "outputPayload": "$entity().state ? \"on\": \"off\"",
+        "outputPayloadType": "jsonata",
+        "x": 1240,
+        "y": 800,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "13d34398.ee1804",
+        "type": "ha-entity",
+        "z": "6a3067bf.7f7f88",
+        "name": "Total Downloaded",
+        "server": "d10b5b0f.f907d",
+        "version": 1,
+        "debugenabled": false,
+        "outputs": 1,
+        "entityType": "sensor",
+        "config": [
+            {
+                "property": "name",
+                "value": "Apple Inhaltscache - Total Downloaded"
+            },
+            {
+                "property": "device_class",
+                "value": ""
+            },
+            {
+                "property": "icon",
+                "value": ""
+            },
+            {
+                "property": "unit_of_measurement",
+                "value": "GB"
+            }
+        ],
+        "state": "payload.TotalBytesStoredFromOrigin",
+        "stateType": "msg",
+        "attributes": [],
+        "resend": true,
+        "outputLocation": "",
+        "outputLocationType": "none",
+        "inputOverride": "allow",
+        "outputOnStateChange": false,
+        "outputPayload": "$entity().state ? \"on\": \"off\"",
+        "outputPayloadType": "jsonata",
+        "x": 1250,
+        "y": 860,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "195e4212.d6ad6e",
+        "type": "ha-entity",
+        "z": "6a3067bf.7f7f88",
+        "name": "Cachedruck",
+        "server": "d10b5b0f.f907d",
+        "version": 1,
+        "debugenabled": false,
+        "outputs": 1,
+        "entityType": "sensor",
+        "config": [
+            {
+                "property": "name",
+                "value": "Apple Inhaltscache - Cachedruck"
+            },
+            {
+                "property": "device_class",
+                "value": ""
+            },
+            {
+                "property": "icon",
+                "value": ""
+            },
+            {
+                "property": "unit_of_measurement",
+                "value": "%"
+            }
+        ],
+        "state": "payload.MaxCachePressureLast1Hour",
+        "stateType": "msg",
+        "attributes": [],
+        "resend": true,
+        "outputLocation": "",
+        "outputLocationType": "none",
+        "inputOverride": "allow",
+        "outputOnStateChange": false,
+        "outputPayload": "$entity().state ? \"on\": \"off\"",
+        "outputPayloadType": "jsonata",
+        "x": 1230,
+        "y": 920,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "f8a39749.d4b89",
+        "type": "exec",
+        "z": "6a3067bf.7f7f88",
+        "command": "log show --last 5m --predicate 'subsystem == \"com.apple.AssetCache\"' | grep -c \"Received GET request by \"",
+        "addpay": false,
+        "append": "",
+        "useSpawn": "false",
+        "timer": "",
+        "oldrc": false,
+        "name": "Downloadanfragen",
+        "x": 430,
+        "y": 340,
+        "wires": [
+            [
+                "8f8d1afe.88be38"
+            ],
+            [],
+            [
+                "3319d543.85ccaa"
+            ]
+        ]
+    },
+    {
+        "id": "8f8d1afe.88be38",
+        "type": "function",
+        "z": "6a3067bf.7f7f88",
+        "name": "",
+        "func": "msg.payload = Number(msg.payload)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "x": 620,
+        "y": 340,
+        "wires": [
+            [
+                "ed2723cf.48859"
+            ]
+        ]
+    },
+    {
+        "id": "ed2723cf.48859",
+        "type": "ha-entity",
+        "z": "6a3067bf.7f7f88",
+        "name": "Downloadanfragen",
+        "server": "d10b5b0f.f907d",
+        "version": 1,
+        "debugenabled": false,
+        "outputs": 1,
+        "entityType": "sensor",
+        "config": [
+            {
+                "property": "name",
+                "value": "Apple Inhaltscache - Downloadanfragen"
+            },
+            {
+                "property": "device_class",
+                "value": ""
+            },
+            {
+                "property": "icon",
+                "value": ""
+            },
+            {
+                "property": "unit_of_measurement",
+                "value": ""
+            }
+        ],
+        "state": "payload",
+        "stateType": "msg",
+        "attributes": [],
+        "resend": true,
+        "outputLocation": "",
+        "outputLocationType": "none",
+        "inputOverride": "allow",
+        "outputOnStateChange": false,
+        "outputPayload": "$entity().state ? \"on\": \"off\"",
+        "outputPayloadType": "jsonata",
+        "x": 790,
+        "y": 340,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "fbc74965.f36f48",
+        "type": "ha-entity",
+        "z": "6a3067bf.7f7f88",
+        "name": "Uploadanfragen",
+        "server": "d10b5b0f.f907d",
+        "version": 1,
+        "debugenabled": false,
+        "outputs": 1,
+        "entityType": "sensor",
+        "config": [
+            {
+                "property": "name",
+                "value": "Apple Inhaltscache - Uploadanfragen"
+            },
+            {
+                "property": "device_class",
+                "value": ""
+            },
+            {
+                "property": "icon",
+                "value": ""
+            },
+            {
+                "property": "unit_of_measurement",
+                "value": ""
+            }
+        ],
+        "state": "payload",
+        "stateType": "msg",
+        "attributes": [],
+        "resend": true,
+        "outputLocation": "",
+        "outputLocationType": "none",
+        "inputOverride": "allow",
+        "outputOnStateChange": false,
+        "outputPayload": "$entity().state ? \"on\": \"off\"",
+        "outputPayloadType": "jsonata",
+        "x": 780,
+        "y": 400,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "3319d543.85ccaa",
+        "type": "exec",
+        "z": "6a3067bf.7f7f88",
+        "command": "log show --last 5m --predicate 'subsystem == \"com.apple.AssetCache\"' | grep -c \"Received PUT request by \"",
+        "addpay": false,
+        "append": "",
+        "useSpawn": "false",
+        "timer": "",
+        "oldrc": false,
+        "name": "Uploadanfragen",
+        "x": 420,
+        "y": 400,
+        "wires": [
+            [
+                "d6c84fcc.13b68"
+            ],
+            [],
+            []
+        ]
+    },
+    {
+        "id": "d6c84fcc.13b68",
+        "type": "function",
+        "z": "6a3067bf.7f7f88",
+        "name": "",
+        "func": "msg.payload = Number(msg.payload)\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "x": 620,
+        "y": 400,
+        "wires": [
+            [
+                "fbc74965.f36f48"
+            ]
+        ]
+    },
+    {
+        "id": "f1c839a7.e8a27",
+        "type": "exec",
+        "z": "6a3067bf.7f7f88",
+        "command": "echo $(log show --last 5m --predicate 'subsystem == \"com.apple.AssetCache\"' | grep -e \"PUTing\" | sed \"s/.*PUTing //g\" | sed \"s/ bytes to.*/\\,/g\")0",
+        "addpay": false,
+        "append": "",
+        "useSpawn": "false",
+        "timer": "",
+        "oldrc": false,
+        "name": "Datenupload",
+        "x": 410,
+        "y": 480,
+        "wires": [
+            [
+                "b936448e.dcb358"
+            ],
+            [],
+            []
+        ]
+    },
+    {
+        "id": "b936448e.dcb358",
+        "type": "function",
+        "z": "6a3067bf.7f7f88",
+        "name": "",
+        "func": "var data = msg.payload\ntry{\n    if (data == \"0\"){\n        data = 0\n    }else{\n        data = data.split(\",\")\n        byte = 0\n        for (var size in data){\n            size = data[size]\n            size = size.replace(\" \",\"\")\n            byte += Number(size)\n        }\n        data = byte\n    }\n    msg.payload = byteToMB(Number(data))\n}catch(Exception) {\n    msg.payload = 0\n}\nreturn msg;\n\nfunction byteToMB(nr){\n    return Number((nr / 1000000).toFixed(2))\n}",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "x": 580,
+        "y": 480,
+        "wires": [
+            [
+                "55fe88ba.b1e7c"
+            ]
+        ]
+    },
+    {
+        "id": "44919c76.b1bd5c",
+        "type": "inject",
+        "z": "6a3067bf.7f7f88",
+        "name": "Alle 5 Minuten",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "300",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 140,
+        "y": 340,
+        "wires": [
+            [
+                "f8a39749.d4b89",
+                "f1c839a7.e8a27",
+                "29778ff0.380028"
+            ]
+        ]
+    },
+    {
+        "id": "29778ff0.380028",
+        "type": "exec",
+        "z": "6a3067bf.7f7f88",
+        "command": "echo $(log show --last 5m --predicate 'subsystem == \"com.apple.AssetCache\"' | grep -e \"Info loaded: response code = 200\" | grep -e \"file length\" | sed 's/.*length = //g' | sed 's/\\,.*/\\,/g')0",
+        "addpay": false,
+        "append": "",
+        "useSpawn": "false",
+        "timer": "",
+        "oldrc": false,
+        "name": "Datendownload",
+        "x": 420,
+        "y": 540,
+        "wires": [
+            [
+                "8d1c09fd.2fc57"
+            ],
+            [],
+            []
+        ]
+    },
+    {
+        "id": "8d1c09fd.2fc57",
+        "type": "function",
+        "z": "6a3067bf.7f7f88",
+        "name": "",
+        "func": "var data = msg.payload\ntry{\n    if (data == \"0\"){\n        data = 0\n    }else{\n        data = data.split(\",\")\n        byte = 0\n        for (var size in data){\n            size = data[size]\n            size = size.replace(\" \",\"\")\n            byte += Number(size)\n        }\n        data = byte\n    }\n    msg.payload = byteToMB(Number(data))\n}catch(Exception) {\n    msg.payload = 0\n}\nreturn msg;\n\nfunction byteToMB(nr){\n    return Number((nr / 1000000).toFixed(2))\n}",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "x": 580,
+        "y": 540,
+        "wires": [
+            [
+                "c99b38a0.afe168"
+            ]
+        ]
+    },
+    {
+        "id": "27ea788c.9a7e6",
+        "type": "ha-entity",
+        "z": "6a3067bf.7f7f88",
+        "name": "Effizienz",
+        "server": "d10b5b0f.f907d",
+        "version": 1,
+        "debugenabled": false,
+        "outputs": 1,
+        "entityType": "sensor",
+        "config": [
+            {
+                "property": "name",
+                "value": "Apple Inhaltscache - Effizienz"
+            },
+            {
+                "property": "device_class",
+                "value": ""
+            },
+            {
+                "property": "icon",
+                "value": ""
+            },
+            {
+                "property": "unit_of_measurement",
+                "value": "%"
+            }
+        ],
+        "state": "payload.efficancy",
+        "stateType": "msg",
+        "attributes": [],
+        "resend": true,
+        "outputLocation": "",
+        "outputLocationType": "none",
+        "inputOverride": "allow",
+        "outputOnStateChange": false,
+        "outputPayload": "$entity().state ? \"on\": \"off\"",
+        "outputPayloadType": "jsonata",
+        "x": 1220,
+        "y": 980,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "6f52cf6e.902a98",
+        "type": "ha-entity",
+        "z": "6a3067bf.7f7f88",
+        "name": "Datenstatistik seit",
+        "server": "d10b5b0f.f907d",
+        "version": 1,
+        "debugenabled": false,
+        "outputs": 1,
+        "entityType": "sensor",
+        "config": [
+            {
+                "property": "name",
+                "value": "Apple Inhaltscache - Datenstatistik seit"
+            },
+            {
+                "property": "device_class",
+                "value": ""
+            },
+            {
+                "property": "icon",
+                "value": ""
+            },
+            {
+                "property": "unit_of_measurement",
+                "value": ""
+            }
+        ],
+        "state": "payload.TotalBytesAreSince",
+        "stateType": "msg",
+        "attributes": [],
+        "resend": true,
+        "outputLocation": "",
+        "outputLocationType": "none",
+        "inputOverride": "allow",
+        "outputOnStateChange": false,
+        "outputPayload": "$entity().state ? \"on\": \"off\"",
+        "outputPayloadType": "jsonata",
+        "x": 1250,
+        "y": 1040,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "53a3cb1.d5205b4",
+        "type": "ha-entity",
+        "z": "6a3067bf.7f7f88",
+        "name": "Lokale Adresse",
+        "server": "d10b5b0f.f907d",
+        "version": 1,
+        "debugenabled": false,
+        "outputs": 1,
+        "entityType": "sensor",
+        "config": [
+            {
+                "property": "name",
+                "value": "Apple Inhaltscache - Lokale Adresse"
+            },
+            {
+                "property": "device_class",
+                "value": ""
+            },
+            {
+                "property": "icon",
+                "value": ""
+            },
+            {
+                "property": "unit_of_measurement",
+                "value": ""
+            }
+        ],
+        "state": "payload.localAddress",
+        "stateType": "msg",
+        "attributes": [],
+        "resend": true,
+        "outputLocation": "",
+        "outputLocationType": "none",
+        "inputOverride": "allow",
+        "outputOnStateChange": false,
+        "outputPayload": "$entity().state ? \"on\": \"off\"",
+        "outputPayloadType": "jsonata",
+        "x": 1240,
+        "y": 1100,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "13c2a4db.2b9f53",
+        "type": "ha-entity",
+        "z": "6a3067bf.7f7f88",
+        "name": "Öffentliche Adresse",
+        "server": "d10b5b0f.f907d",
+        "version": 1,
+        "debugenabled": false,
+        "outputs": 1,
+        "entityType": "sensor",
+        "config": [
+            {
+                "property": "name",
+                "value": "Apple Inhaltscache - Öffentliche Adresse"
+            },
+            {
+                "property": "device_class",
+                "value": ""
+            },
+            {
+                "property": "icon",
+                "value": ""
+            },
+            {
+                "property": "unit_of_measurement",
+                "value": ""
+            }
+        ],
+        "state": "payload.PublicAddress",
+        "stateType": "msg",
+        "attributes": [],
+        "resend": true,
+        "outputLocation": "",
+        "outputLocationType": "none",
+        "inputOverride": "allow",
+        "outputOnStateChange": false,
+        "outputPayload": "$entity().state ? \"on\": \"off\"",
+        "outputPayloadType": "jsonata",
+        "x": 1250,
+        "y": 1160,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "80491eb4.5c5bd",
+        "type": "ha-entity",
+        "z": "6a3067bf.7f7f88",
+        "name": "Status",
+        "server": "d10b5b0f.f907d",
+        "version": 1,
+        "debugenabled": false,
+        "outputs": 1,
+        "entityType": "sensor",
+        "config": [
+            {
+                "property": "name",
+                "value": "Apple Inhaltscache - Status"
+            },
+            {
+                "property": "device_class",
+                "value": ""
+            },
+            {
+                "property": "icon",
+                "value": ""
+            },
+            {
+                "property": "unit_of_measurement",
+                "value": ""
+            }
+        ],
+        "state": "payload.StartupStatus",
+        "stateType": "msg",
+        "attributes": [],
+        "resend": true,
+        "outputLocation": "",
+        "outputLocationType": "none",
+        "inputOverride": "allow",
+        "outputOnStateChange": false,
+        "outputPayload": "$entity().state ? \"on\": \"off\"",
+        "outputPayloadType": "jsonata",
+        "x": 1210,
+        "y": 1220,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "be75d447.e74288",
+        "type": "inject",
+        "z": "6a3067bf.7f7f88",
+        "name": "Jede halbe Stunde",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "1800",
+        "crontab": "",
+        "once": true,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 150,
+        "y": 600,
+        "wires": [
+            [
+                "8ed16c73.cb13e"
+            ]
+        ]
+    },
+    {
+        "id": "8ed16c73.cb13e",
+        "type": "exec",
+        "z": "6a3067bf.7f7f88",
+        "command": "nmap  192.168.178.0/24 -p 62078,548 --open | grep -c \"Host is up\"",
+        "addpay": false,
+        "append": "",
+        "useSpawn": "false",
+        "timer": "",
+        "oldrc": false,
+        "name": "",
+        "x": 580,
+        "y": 620,
+        "wires": [
+            [
+                "f876deb3.9f0a9"
+            ],
+            [],
+            []
+        ]
+    },
+    {
+        "id": "f876deb3.9f0a9",
+        "type": "ha-entity",
+        "z": "6a3067bf.7f7f88",
+        "name": "Clients",
+        "server": "d10b5b0f.f907d",
+        "version": 1,
+        "debugenabled": false,
+        "outputs": 1,
+        "entityType": "sensor",
+        "config": [
+            {
+                "property": "name",
+                "value": "Apple Inhaltscache - Connected Clients"
+            },
+            {
+                "property": "device_class",
+                "value": ""
+            },
+            {
+                "property": "icon",
+                "value": ""
+            },
+            {
+                "property": "unit_of_measurement",
+                "value": ""
+            }
+        ],
+        "state": "payload",
+        "stateType": "msg",
+        "attributes": [],
+        "resend": true,
+        "outputLocation": "",
+        "outputLocationType": "none",
+        "inputOverride": "allow",
+        "outputOnStateChange": false,
+        "outputPayload": "$entity().state ? \"on\": \"off\"",
+        "outputPayloadType": "jsonata",
+        "x": 910,
+        "y": 620,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "5e26eaad.e4d934",
+        "type": "ha-entity",
+        "z": "6a3067bf.7f7f88",
+        "name": "Letztes Update",
+        "server": "d10b5b0f.f907d",
+        "version": 1,
+        "debugenabled": false,
+        "outputs": 1,
+        "entityType": "sensor",
+        "config": [
+            {
+                "property": "name",
+                "value": "Apple Inhaltscache - Letztes Update"
+            },
+            {
+                "property": "device_class",
+                "value": ""
+            },
+            {
+                "property": "icon",
+                "value": ""
+            },
+            {
+                "property": "unit_of_measurement",
+                "value": ""
+            }
+        ],
+        "state": "payload.lastUpdate",
+        "stateType": "msg",
+        "attributes": [],
+        "resend": true,
+        "outputLocation": "",
+        "outputLocationType": "none",
+        "inputOverride": "allow",
+        "outputOnStateChange": false,
+        "outputPayload": "$entity().state ? \"on\": \"off\"",
+        "outputPayloadType": "jsonata",
+        "x": 1240,
+        "y": 1280,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "55fe88ba.b1e7c",
+        "type": "ha-entity",
+        "z": "6a3067bf.7f7f88",
+        "name": "Datenupload",
+        "server": "d10b5b0f.f907d",
+        "version": 1,
+        "debugenabled": false,
+        "outputs": 1,
+        "entityType": "sensor",
+        "config": [
+            {
+                "property": "name",
+                "value": "Apple Inhaltscache - Datenupload"
+            },
+            {
+                "property": "device_class",
+                "value": ""
+            },
+            {
+                "property": "icon",
+                "value": ""
+            },
+            {
+                "property": "unit_of_measurement",
+                "value": "MB"
+            }
+        ],
+        "state": "payload",
+        "stateType": "msg",
+        "attributes": [],
+        "resend": true,
+        "outputLocation": "",
+        "outputLocationType": "none",
+        "inputOverride": "allow",
+        "outputOnStateChange": false,
+        "outputPayload": "$entity().state ? \"on\": \"off\"",
+        "outputPayloadType": "jsonata",
+        "x": 770,
+        "y": 480,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "c99b38a0.afe168",
+        "type": "ha-entity",
+        "z": "6a3067bf.7f7f88",
+        "name": "Datendownload",
+        "server": "d10b5b0f.f907d",
+        "version": 1,
+        "debugenabled": false,
+        "outputs": 1,
+        "entityType": "sensor",
+        "config": [
+            {
+                "property": "name",
+                "value": "Apple Inhaltscache - Datendownload"
+            },
+            {
+                "property": "device_class",
+                "value": ""
+            },
+            {
+                "property": "icon",
+                "value": ""
+            },
+            {
+                "property": "unit_of_measurement",
+                "value": "MB"
+            }
+        ],
+        "state": "payload",
+        "stateType": "msg",
+        "attributes": [],
+        "resend": true,
+        "outputLocation": "",
+        "outputLocationType": "none",
+        "inputOverride": "allow",
+        "outputOnStateChange": false,
+        "outputPayload": "$entity().state ? \"on\": \"off\"",
+        "outputPayloadType": "jsonata",
+        "x": 780,
+        "y": 540,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "d10b5b0f.f907d",
+        "type": "server",
+        "name": "Home Assistant",
+        "legacy": false,
+        "addon": false,
+        "rejectUnauthorizedCerts": false,
+        "ha_boolean": "y|yes|true|on|home|open",
+        "connectionDelay": true,
+        "cacheJson": true
+    }
+]
