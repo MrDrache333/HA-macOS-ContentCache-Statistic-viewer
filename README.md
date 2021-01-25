@@ -10,6 +10,7 @@ Implementation for apple content cache statistics in home assistant using node-r
 - Running Home Assistant Instance (Local or Network)
 - Installed [HACS-Store](https://hacs.xyz/docs/installation/prerequisites) in Home Assistant
 - Installed custom [Bar Card](https://github.com/custom-cards/bar-card.git)
+- Installed custom [mini-graph-card](https://github.com/kalkih/mini-graph-card)
 
 ## Installation for Caching-Server-Mac
 1. Open up your Browser and navigate to your Node-Red configuration website.
