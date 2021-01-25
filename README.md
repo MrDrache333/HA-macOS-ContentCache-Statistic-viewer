@@ -1,6 +1,8 @@
 # HA-macOS-ContentCache-Statistic-viewer
 Implementation for apple content cache statistics in home assistant using node-red an the cli tools for the build-in caching server
 
+[What is a content caching server on macOS?](https://support.apple.com/guide/mac-help/what-is-content-caching-on-mac-mchl9388ba1b/11.0/mac/11.0)
+
 ![Screenshot](screenshot.jpg)
 
 ## Requirements for Caching-Server-Mac
