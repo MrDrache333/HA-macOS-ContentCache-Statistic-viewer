@@ -95,6 +95,7 @@
             name: Verlauf (Daten)
           - type: 'custom:mini-graph-card'
             points_per_hour: 12
+            icon: 'mdi:download'
             entities:
               - entity: sensor.apple_inhaltscache_datendownload
                 name: Download
@@ -116,6 +117,7 @@
             hours_to_show: 24
           - type: 'custom:mini-graph-card'
             points_per_hour: 12
+            icon: 'mdi:crosshairs-question'
             entities:
               - entity: sensor.apple_inhaltscache_downloadanfragen_2m
                 name: Downloadanfragen
