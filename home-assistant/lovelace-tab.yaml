@@ -49,23 +49,36 @@
         title: Datenstatistik
       - type: vertical-stack
         cards:
-          - type: sensor
-            entity: sensor.apple_inhaltscache_cachedruck
-            graph: line
+          - type: 'custom:mini-graph-card'
+            entities:
+              - entity: sensor.apple_inhaltscache_cachedruck
             name: Cachedruck
-            detail: 2
+            show:
+              graph: bar
             icon: 'mdi:arrow-collapse-vertical'
-          - type: sensor
-            graph: line
-            entity: sensor.apple_inhaltscache_effizienz
+            color_thresholds:
+              - value: 0
+                color: '#8CD790'
+              - value: 50
+                color: '#E71D36'
+              - value: 80
+                color: '#F17F42'
+          - type: 'custom:mini-graph-card'
+            entities:
+              - entity: sensor.apple_inhaltscache_effizienz
             name: Effizienz
-            detail: 2
             icon: 'mdi:trending-up'
-          - type: sensor
-            entity: sensor.apple_inhaltscache
-            graph: line
+            color_thresholds:
+              - value: 0
+                color: '#F17F42'
+              - value: 25
+                color: '#E71D36'
+              - value: 50
+                color: '#8CD790'
+          - type: 'custom:mini-graph-card'
+            entities:
+              - entity: sensor.apple_inhaltscache
             name: Speicherbelegung
-            detail: 2
             icon: 'mdi:sd'
       - type: vertical-stack
         cards:
