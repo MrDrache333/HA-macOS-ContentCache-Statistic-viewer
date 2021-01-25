@@ -1,6 +1,8 @@
   - title: Apple Cache
     path: cache
     panel: false
+    theme: ''
+    icon: 'mdi:sd'
     badges:
       - entity: sensor.apple_inhaltscache_alles_ok
     cards:
@@ -47,65 +49,89 @@
         title: Datenstatistik
       - type: vertical-stack
         cards:
-          - type: gauge
-            min: 0
-            max: 100
+          - type: sensor
             entity: sensor.apple_inhaltscache_cachedruck
+            graph: line
             name: Cachedruck
-            severity:
-              green: 0
-              yellow: 50
-              red: 80
-          - type: gauge
-            min: 0
-            max: 100
+            detail: 2
+            icon: 'mdi:arrow-collapse-vertical'
+          - type: sensor
+            graph: line
             entity: sensor.apple_inhaltscache_effizienz
             name: Effizienz
-            severity:
-              green: 50
-              yellow: 4
-              red: 10
-          - type: gauge
-            min: 0
-            max: 500
+            detail: 2
+            icon: 'mdi:trending-up'
+          - type: sensor
             entity: sensor.apple_inhaltscache
-            severity:
-              green: 0
-              yellow: 250
-              red: 450
+            graph: line
             name: Speicherbelegung
-            unit: GB
+            detail: 2
+            icon: 'mdi:sd'
       - type: vertical-stack
         cards:
-          - type: history-graph
+          - type: 'custom:mini-graph-card'
             entities:
+              - entity: sensor.apple_inhaltscache_total_returned
+                name: Verteilt
               - entity: sensor.apple_inhaltscache_total_dropped
                 name: Entfernt
               - entity: sensor.apple_inhaltscache_total_imported
                 name: Importiert
               - entity: sensor.apple_inhaltscache_total_downloaded
                 name: Download
-              - entity: sensor.apple_inhaltscache_total_returned
-                name: Verteilt
+              - color: white
+                entity: input_number.daytime
+                name: Day
+                show_line: false
+                show_points: false
+                show_legend: false
+                y_axis: secondary
             hours_to_show: 168
             refresh_interval: 0
-            title: Verlauf (Daten)
-          - type: history-graph
+            show:
+              state: true
+              labels: true
+              labels_secondary: false
+            name: Verlauf (Daten)
+          - type: 'custom:mini-graph-card'
+            points_per_hour: 12
             entities:
               - entity: sensor.apple_inhaltscache_datendownload
                 name: Download
               - entity: sensor.apple_inhaltscache_datenupload
                 name: Upload
-            hours_to_show: 1
+              - color: white
+                entity: input_number.daytime
+                name: Day
+                show_line: false
+                show_points: false
+                show_legend: false
+                y_axis: secondary
             refresh_interval: 0
-            title: Datenverkehr Cache-Internet
-          - type: history-graph
+            show:
+              state: false
+              labels: true
+              labels_secondary: false
+            name: Datenverkehr Cache-Internet (MB)
+            hours_to_show: 24
+          - type: 'custom:mini-graph-card'
+            points_per_hour: 12
             entities:
               - entity: sensor.apple_inhaltscache_downloadanfragen_2m
                 name: Downloadanfragen
               - entity: sensor.apple_inhaltscache_uploadanfragen_2m
                 name: Uploadanfragen
-            hours_to_show: 168
+              - color: white
+                entity: input_number.daytime
+                name: Day
+                show_line: false
+                show_points: false
+                show_legend: false
+                y_axis: secondary
+            hours_to_show: 24
             refresh_interval: 0
-            title: Anfragen der letzten Woche
-
+            show:
+              state: false
+              labels: true
+              labels_secondary: false
+            name: Anfragen des letzten Tages
