@@ -1,61 +1,58 @@
   - title: Apple Cache
     path: cache
     panel: false
-    theme: ''
     icon: 'mdi:sd'
     badges:
       - entity: sensor.apple_inhaltscache_alles_ok
+      - entity: sensor.apple_inhaltscache_effizienz
+      - entity: sensor.apple_inhaltscache_cachedruck
     cards:
-      - entities:
-          - entity: sensor.apple_inhaltscache_data_icloud
-            name: iCloud
-          - entity: sensor.apple_inhaltscache_data_mac
-            name: Mac
-          - entity: sensor.apple_inhaltscache_data_other
-            name: Other
-          - entity: sensor.apple_inhaltscache_data_tv
-            name: TV
-          - entity: sensor.apple_inhaltscache_data_ios
-            name: iOS
-        title: Bereitstellungen aus Cache
-        direction: up
-        height: 300px
-        stack: horizontal
-        type: 'custom:bar-card'
-      - type: entities
-        entities:
-          - entity: sensor.apple_inhaltscache_status
-            name: Aktueller Status
-          - entity: sensor.apple_inhaltscache_letztes_update
-            name: Letztes Update
-          - entity: sensor.apple_inhaltscache_lokale_adresse
-            name: Lokale Adresse
-          - entity: sensor.apple_inhaltscache_offentliche_adresse
-            name: Öffentliche Adresse
-        state_color: true
-      - type: entities
-        entities:
-          - entity: sensor.apple_inhaltscache_datenstatistik_seit
-            name: Daten seit dem
-          - entity: sensor.apple_inhaltscache_total_returned
-            name: An Clients verteilt
-          - entity: sensor.apple_inhaltscache_total_downloaded
-            name: Von Quelle geladen
-          - entity: sensor.apple_inhaltscache_total_imported
-            name: Von Clients importiert
-          - entity: sensor.apple_inhaltscache_total_dropped
-            name: Aus Cache entfernt
-        state_color: true
-        title: Datenstatistik
       - type: vertical-stack
         cards:
+          - type: entities
+            entities:
+              - entity: sensor.apple_inhaltscache_status
+                name: Aktueller Status
+              - entity: sensor.apple_inhaltscache_letztes_update
+                name: Letztes Update
+              - entity: sensor.apple_inhaltscache_lokale_adresse
+                name: Lokale Adresse
+              - entity: sensor.apple_inhaltscache_offentliche_adresse
+                name: Öffentliche Adresse
+              - entity: sensor.apple_inhaltscache_connected_clients
+                name: Verbundene Geräte
+                icon: 'mdi:devices'
+            state_color: true
+            footer:
+              type: graph
+              entity: sensor.apple_inhaltscache_connected_clients
+              hours_to_show: 24
+              detail: 2
+          - type: entities
+            entities:
+              - entity: sensor.apple_inhaltscache_datenstatistik_seit
+                name: Daten seit dem
+              - entity: sensor.apple_inhaltscache_total_returned
+                name: An Clients verteilt
+              - entity: sensor.apple_inhaltscache_total_downloaded
+                name: Von Quelle geladen
+              - entity: sensor.apple_inhaltscache_total_imported
+                name: Von Clients importiert
+              - entity: sensor.apple_inhaltscache_total_dropped
+                name: Aus Cache entfernt
+            state_color: true
+            title: Datenstatistik
           - type: 'custom:mini-graph-card'
             entities:
               - entity: sensor.apple_inhaltscache_cachedruck
             name: Cachedruck
+            upper_bound: ~100
             show:
               graph: bar
+              labels: true
             icon: 'mdi:arrow-collapse-vertical'
+            hours_to_show: 168
+            points_per_hour: 0.125
             color_thresholds:
               - value: 0
                 color: '#00FF00'
@@ -67,7 +64,11 @@
             entities:
               - entity: sensor.apple_inhaltscache_effizienz
             name: Effizienz
+            show:
+              labels: true
             icon: 'mdi:trending-up'
+            hours_to_show: 720
+            points_per_hour: 0.1
             color_thresholds:
               - value: 10
                 color: '#FF0000'
@@ -78,10 +79,37 @@
           - type: 'custom:mini-graph-card'
             entities:
               - entity: sensor.apple_inhaltscache
-            name: Speicherbelegung
+            name: Speicherbelegung (Max. 500 GB)
+            show:
+              labels: true
             icon: 'mdi:sd'
+            hours_to_show: 720
+            points_per_hour: 0.1
+            color_thresholds:
+              - value: 0
+                color: '#00FF00'
+              - value: 400
+                color: '#FFFF00'
+              - value: 450
+                color: '#FF0000'
       - type: vertical-stack
         cards:
+          - type: 'custom:bar-card'
+            entities:
+              - entity: sensor.apple_inhaltscache_data_icloud
+                name: iCloud
+              - entity: sensor.apple_inhaltscache_data_mac
+                name: Mac
+              - entity: sensor.apple_inhaltscache_data_other
+                name: Other
+              - entity: sensor.apple_inhaltscache_data_tv
+                name: TV
+              - entity: sensor.apple_inhaltscache_data_ios
+                name: iOS
+            title: Bereitstellungen aus Cache
+            direction: up
+            height: 300px
+            stack: horizontal
           - type: 'custom:mini-graph-card'
             entities:
               - entity: sensor.apple_inhaltscache_total_returned
