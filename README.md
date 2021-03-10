@@ -1,4 +1,7 @@
 # HA-macOS-ContentCache-Statistic-viewer
+
+<a href="https://www.buymeacoffee.com/MrDrache333" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" height=40px alt="Buy Me A Coffee"></a>
+
 Implementation for apple content cache statistics in home assistant using node-red an the cli tools for the build-in caching server
 
 [What is a content caching server on macOS?](https://support.apple.com/guide/mac-help/what-is-content-caching-on-mac-mchl9388ba1b/11.0/mac/11.0)
@@ -24,3 +27,5 @@ Implementation for apple content cache statistics in home assistant using node-r
 
 ## Installation for Home Assitant
 1. Import the 'Apple Cache'-Tab i've preconfigured from [home-assistant/lovelace-tab.yaml](https://github.com/MrDrache333/macOS-ContentCache-Statistic-viewer/blob/main/home-assistant/lovelace-tab.yaml) to your lovelace dashboard. To do so edit your lovelace dashboard and klick on the three dots in the right hand corner and select 'Edit in RAW-Mode'. Paste the yaml-File-Content at the and and save your configuration
+
+<a href="https://www.buymeacoffee.com/MrDrache333" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" height=40px alt="Buy Me A Coffee"></a>
